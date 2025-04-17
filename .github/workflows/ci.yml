@@ -1,4 +1,4 @@
-name: CI
+name: Full Project CI
 
 on:
   push:
@@ -7,12 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  client:
+    name: Client CI
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: ./client
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -22,11 +24,37 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Lint the code
+      - name: Lint client
         run: npm run lint
 
-      - name: Run tests
+      - name: Test client
         run: npm test
 
-      - name: Build the app
+      - name: Build client
+        run: npm run build
+
+  server:
+    name: Server CI
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./server
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Lint server
+        run: npm run lint
+
+      - name: Test server
+        run: npm test
+
+      - name: Build server
         run: npm run build
